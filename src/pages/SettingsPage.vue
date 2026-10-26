@@ -189,13 +189,11 @@ async function authAction(action: 'logout' | 'reset') {
         Удалить все свои записи из дневника. Отменить это действие нельзя — сначала можно скачать
         копию.
       </p>
+      <!-- prettier-ignore -->
       <button
         class="danger-button"
         :disabled="busy || !events.length"
-        @click="
-          error = ''
-          confirmation = 'clear'
-        "
+        @click="error = ''; confirmation = 'clear'"
       >
         Удалить все записи
       </button>
