@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue';
 import { events } from '../state';
 import { dayKey, recentDays, prettyDate, fromDay } from '../lib/dates';
+import StoolIcon from '../components/StoolIcon.vue';
+import { bristolBreakdown } from '../lib/bristol';
 const props = defineProps<{ today: string }>();
 const period = ref(7);
 const dates = computed(() => recentDays(period.value, fromDay(props.today)));
@@ -10,6 +12,11 @@ const rows = computed(() =>
 );
 const monthRows = computed(() =>
   events.value.filter((e) => dayKey(e.occurred_at).slice(0, 7) === props.today.slice(0, 7)),
+);
+const monthPoops = computed(() => monthRows.value.filter((event) => event.type === 'poop'));
+const breakdown = computed(() => bristolBreakdown(monthPoops.value));
+const monthLabel = computed(() =>
+  fromDay(props.today).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }),
 );
 const poopDays = computed(
   () => new Set(rows.value.filter((e) => e.type === 'poop').map((e) => dayKey(e.occurred_at))).size,
@@ -55,10 +62,55 @@ const achievements = computed(() => [
     </div>
   </div>
   <div class="stats-grid">
-    <section class="stat-card peach">
-      <span>💩</span><strong>{{ monthRows.filter((e) => e.type === 'poop').length }}</strong>
-      <p>какашек в этом месяце</p>
-    </section>
+    <details class="stat-card peach bristol-stat">
+      <summary aria-label="Какашек в этом месяце: разбивка по типам">
+        <span
+          class="stat-emoji"
+          aria-hidden="true"
+          >💩</span
+        >
+        <strong>{{ monthPoops.length }}</strong>
+        <p>какашек в этом месяце</p>
+        <span class="breakdown-toggle"
+          >По типам
+          <span
+            class="breakdown-chevron"
+            aria-hidden="true"
+            >⌄</span
+          ></span
+        >
+      </summary>
+      <div class="bristol-breakdown">
+        <p class="breakdown-period">{{ monthLabel }} · все записи дефекации</p>
+        <p
+          v-if="!monthPoops.length"
+          class="breakdown-empty"
+        >
+          Пока нет записей за этот месяц ♡
+        </p>
+        <ul>
+          <li
+            v-for="item in breakdown"
+            :key="item.type ?? 'unknown'"
+          >
+            <StoolIcon :type="item.type" />
+            <div class="breakdown-description">
+              <span>{{ item.type ? `Тип ${item.type} · ` : '' }}{{ item.name }}</span>
+              <div
+                class="breakdown-track"
+                aria-hidden="true"
+              >
+                <div :style="{ width: `${item.percentage}%` }" />
+              </div>
+            </div>
+            <span class="breakdown-count"
+              >{{ item.count }}<small>{{ item.percentage }}%</small></span
+            >
+          </li>
+        </ul>
+        <p class="breakdown-note">Одна запись — один момент. Проценты округлены.</p>
+      </div>
+    </details>
     <section class="stat-card lavender">
       <span>💨</span><strong>{{ monthRows.filter((e) => e.type === 'fart').length }}</strong>
       <p>пуков в этом месяце</p>

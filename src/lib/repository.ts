@@ -1,9 +1,13 @@
-import type { DiaryEvent, Repository } from '../types'
+import type { DiaryEvent, EventInput, Repository } from '../types'
 import { supabase } from './supabase'
 import { createLocalRepository } from './localRepository'
 export function createRepository(userId: string): Repository {
   if (!supabase) return createLocalRepository(localStorage)
   const client = supabase
+  const normalize = (input: EventInput): EventInput => ({
+    ...input,
+    bristol_type: input.type === 'poop' ? (input.bristol_type ?? null) : null,
+  })
   return {
     async list() {
       const rows: DiaryEvent[] = []
@@ -23,7 +27,7 @@ export function createRepository(userId: string): Repository {
     async add(input) {
       const { data, error } = await client
         .from('events')
-        .insert({ ...input, user_id: userId })
+        .insert({ ...normalize(input), user_id: userId })
         .select()
         .single()
       if (error) throw error
@@ -32,7 +36,7 @@ export function createRepository(userId: string): Repository {
     async update(id, input) {
       const { data, error } = await client
         .from('events')
-        .update(input)
+        .update(normalize(input))
         .eq('id', id)
         .eq('user_id', userId)
         .select()
@@ -51,7 +55,7 @@ export function createRepository(userId: string): Repository {
     async import(inputs) {
       const { error } = await client
         .from('events')
-        .insert(inputs.map((input) => ({ ...input, user_id: userId })))
+        .insert(inputs.map((input) => ({ ...normalize(input), user_id: userId })))
       if (error) throw error
     },
   }

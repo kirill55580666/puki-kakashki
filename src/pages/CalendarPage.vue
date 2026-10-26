@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import MascotIcon from '../components/MascotIcon.vue';
+import StoolIcon from '../components/StoolIcon.vue';
+import { bristolLabel } from '../lib/bristol';
 import { events, loading, busy } from '../state';
 import { dayKey, fromDay, monthDays, prettyDate, timeOf } from '../lib/dates';
 import type { DiaryEvent, EventType } from '../types';
@@ -193,11 +195,16 @@ function goToday(today: string) {
               class="event-symbol"
               :class="event.type"
             >
-              {{ event.type === 'poop' ? '💩' : '💨' }}
+              <StoolIcon
+                v-if="event.type === 'poop'"
+                :type="event.bristol_type"
+              />
+              <span v-else>💨</span>
             </div>
             <div class="event-description">
-              <strong>{{ event.type === 'poop' ? 'Миссия выполнена' : 'Ветер перемен' }}</strong
-              ><span>{{ timeOf(event.occurred_at) }}</span>
+              <strong>{{ event.type === 'poop' ? 'Миссия выполнена' : 'Ветер перемен' }}</strong>
+              <span v-if="event.type === 'poop'">{{ bristolLabel(event.bristol_type) }}</span>
+              <span>{{ timeOf(event.occurred_at) }}</span>
             </div>
             <button
               class="icon-button"
