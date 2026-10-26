@@ -1,4 +1,5 @@
 import type { BristolType, EventInput } from '../types'
+import { parseSymptoms } from './symptoms.ts'
 export function parseImport(text: string): EventInput[] {
   const parsed: unknown = JSON.parse(text)
   const rows = Array.isArray(parsed) ? parsed : (parsed as { events?: unknown } | null)?.events
@@ -33,6 +34,7 @@ export function parseImport(text: string): EventInput[] {
     return {
       type: r.type,
       occurred_at: new Date(r.occurred_at).toISOString(),
+      ...(r.symptoms !== undefined ? { symptoms: parseSymptoms(r.symptoms, r.type) } : {}),
       ...(r.bristol_type !== undefined
         ? { bristol_type: r.bristol_type as BristolType | null }
         : {}),

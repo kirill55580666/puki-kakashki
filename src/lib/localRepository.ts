@@ -1,4 +1,5 @@
 import type { DiaryEvent, EventInput, Repository } from '../types'
+import { parseSymptoms } from './symptoms.ts'
 const storageKey = 'puki-demo-v1'
 export function createLocalRepository(storage: Pick<Storage, 'getItem' | 'setItem'>): Repository {
   const read = (): DiaryEvent[] => JSON.parse(storage.getItem(storageKey) || '[]')
@@ -6,6 +7,7 @@ export function createLocalRepository(storage: Pick<Storage, 'getItem' | 'setIte
   const normalize = (input: EventInput): EventInput => ({
     ...input,
     bristol_type: input.type === 'poop' ? (input.bristol_type ?? null) : null,
+    symptoms: parseSymptoms(input.symptoms, input.type),
   })
   const make = (input: EventInput): DiaryEvent => ({
     ...normalize(input),

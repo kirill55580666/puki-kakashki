@@ -1,12 +1,14 @@
 import type { DiaryEvent, EventInput, Repository } from '../types'
 import { supabase } from './supabase'
 import { createLocalRepository } from './localRepository'
+import { parseSymptoms } from './symptoms.ts'
 export function createRepository(userId: string): Repository {
   if (!supabase) return createLocalRepository(localStorage)
   const client = supabase
   const normalize = (input: EventInput): EventInput => ({
     ...input,
     bristol_type: input.type === 'poop' ? (input.bristol_type ?? null) : null,
+    symptoms: parseSymptoms(input.symptoms, input.type),
   })
   return {
     async list() {
