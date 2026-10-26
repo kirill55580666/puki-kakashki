@@ -30,7 +30,7 @@ const tabs = [
   { id: 'history', icon: '◷', name: 'История' },
   { id: 'settings', icon: '⚙', name: 'Настройки' },
 ];
-const editor = ref<{ type: EventType; event?: DiaryEvent } | null>(null);
+const editor = ref<{ type: EventType; day?: string; event?: DiaryEvent } | null>(null);
 const deleting = ref<DiaryEvent | null>(null);
 const today = ref(dayKey(new Date()));
 let timer: ReturnType<typeof setInterval>;
@@ -46,9 +46,9 @@ watch(signedIn, () => {
   deleting.value = null;
   page.value = 'calendar';
 });
-function add(type: EventType) {
+function add(type: EventType, day: string) {
   error.value = '';
-  editor.value = { type };
+  editor.value = { type, day };
 }
 function edit(event: DiaryEvent) {
   error.value = '';
@@ -165,6 +165,7 @@ async function confirmDelete() {
       v-if="editor"
       :type="editor.type"
       :event="editor.event"
+      :day="editor.day"
       @close="editor = null"
     /><ConfirmDialog
       v-if="deleting"

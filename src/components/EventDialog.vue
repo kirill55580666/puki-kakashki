@@ -3,10 +3,17 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import type { DiaryEvent, EventType } from '../types';
 import { localInput } from '../lib/dates';
 import { busy, error, mutate, notify } from '../state';
-const props = defineProps<{ type: EventType; event?: DiaryEvent }>();
+const props = defineProps<{ type: EventType; day?: string; event?: DiaryEvent }>();
 const emit = defineEmits<{ close: [] }>();
 const dialog = ref<HTMLDialogElement>();
-const value = ref(localInput(props.event?.occurred_at || new Date()));
+const now = localInput(new Date());
+const value = ref(
+  props.event
+    ? localInput(props.event.occurred_at)
+    : props.day
+      ? `${props.day}${now.slice(10)}`
+      : now,
+);
 const validation = ref('');
 const previousFocus = document.activeElement as HTMLElement | null;
 onMounted(() => dialog.value?.showModal());
