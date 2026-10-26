@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.idea/
+package-lock.json
+.env
+.env.*
+*.local
+supabase/
+tests/*.sql
