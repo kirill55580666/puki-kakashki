@@ -113,6 +113,7 @@ form .bristol-option {
   list-style: none;
   padding: 25px 30px;
   border-radius: 24px;
+  min-height: calc(var(--stat-card-height) - 2px);
 }
 .bristol-stat > summary::-webkit-details-marker {
   display: none;
@@ -230,8 +231,9 @@ form .bristol-option {
 }
 
 .stats-grid {
-  align-items: stretch;
-}
-.stats-grid:has(.bristol-stat[open]) {
+  --stat-card-height: 11.5rem;
   align-items: start;
+}
+.stats-grid > .stat-card {
+  min-height: var(--stat-card-height);
 }
