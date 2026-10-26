@@ -1,28 +1,30 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { events } from '../state'
-import { dayKey, recentDays, prettyDate, fromDay } from '../lib/dates'
-const props = defineProps<{ today: string }>()
-const period = ref(7)
-const dates = computed(() => recentDays(period.value, fromDay(props.today)))
-const rows = computed(() => events.value.filter((e) => dates.value.includes(dayKey(e.occurred_at))))
+import { computed, ref } from 'vue';
+import { events } from '../state';
+import { dayKey, recentDays, prettyDate, fromDay } from '../lib/dates';
+const props = defineProps<{ today: string }>();
+const period = ref(7);
+const dates = computed(() => recentDays(period.value, fromDay(props.today)));
+const rows = computed(() =>
+  events.value.filter((e) => dates.value.includes(dayKey(e.occurred_at))),
+);
 const monthRows = computed(() =>
   events.value.filter((e) => dayKey(e.occurred_at).slice(0, 7) === props.today.slice(0, 7)),
-)
+);
 const poopDays = computed(
   () => new Set(rows.value.filter((e) => e.type === 'poop').map((e) => dayKey(e.occurred_at))).size,
-)
+);
 const chart = computed(() =>
   dates.value.map((day) => ({
     day,
     poop: rows.value.filter((e) => dayKey(e.occurred_at) === day && e.type === 'poop').length,
     fart: rows.value.filter((e) => dayKey(e.occurred_at) === day && e.type === 'fart').length,
   })),
-)
-const max = computed(() => Math.max(1, ...chart.value.map((d) => d.poop + d.fart)))
+);
+const max = computed(() => Math.max(1, ...chart.value.map((d) => d.poop + d.fart)));
 const best = computed(
   () => [...chart.value].filter((d) => d.fart).sort((a, b) => b.fart - a.fart)[0],
-)
+);
 const achievements = computed(() => [
   {
     icon: '🌱',
@@ -42,7 +44,7 @@ const achievements = computed(() => [
     text: 'Записи в 7 разных дней',
     unlocked: new Set(events.value.map((e) => dayKey(e.occurred_at))).size >= 7,
   },
-])
+]);
 </script>
 <template>
   <div class="page-heading">

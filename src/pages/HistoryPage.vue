@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { events, busy } from '../state'
-import { dayKey, prettyDate, timeOf } from '../lib/dates'
-import type { DiaryEvent } from '../types'
-defineEmits<{ edit: [event: DiaryEvent]; remove: [event: DiaryEvent] }>()
-const filter = ref('all')
-const limit = ref(50)
+import { computed, ref } from 'vue';
+import { events, busy } from '../state';
+import { dayKey, prettyDate, timeOf } from '../lib/dates';
+import type { DiaryEvent } from '../types';
+defineEmits<{ edit: [event: DiaryEvent]; remove: [event: DiaryEvent] }>();
+const filter = ref('all');
+const limit = ref(50);
 const filtered = computed(() =>
   events.value.filter((e) => filter.value === 'all' || e.type === filter.value),
-)
+);
 </script>
 <template>
   <div class="page-heading">

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { busy, error } from '../state'
-defineProps<{ title: string; text: string; label?: string }>()
-const emit = defineEmits<{ confirm: []; close: [] }>()
-const dialog = ref<HTMLDialogElement>()
-const previousFocus = document.activeElement as HTMLElement | null
-onMounted(() => dialog.value?.showModal())
-onBeforeUnmount(() => previousFocus?.focus())
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { busy, error } from '../state';
+defineProps<{ title: string; text: string; label?: string }>();
+const emit = defineEmits<{ confirm: []; close: [] }>();
+const dialog = ref<HTMLDialogElement>();
+const previousFocus = document.activeElement as HTMLElement | null;
+onMounted(() => dialog.value?.showModal());
+onBeforeUnmount(() => previousFocus?.focus());
 </script>
 <template>
   <dialog

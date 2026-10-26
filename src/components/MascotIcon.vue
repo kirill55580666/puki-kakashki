@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{ small?: boolean }>()
+defineProps<{ small?: boolean }>();
 </script>
 <template>
   <svg

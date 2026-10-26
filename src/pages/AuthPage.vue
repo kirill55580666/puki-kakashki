@@ -1,59 +1,59 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import MascotIcon from '../components/MascotIcon.vue'
-import { supabase, redirectUrl } from '../lib/supabase'
-import { recovery, readableError, notify } from '../state'
-const mode = ref<'login' | 'signup' | 'reset'>('login')
-const email = ref('')
-const password = ref('')
-const pending = ref(false)
-const message = ref('')
-const failure = ref('')
+import { ref } from 'vue';
+import MascotIcon from '../components/MascotIcon.vue';
+import { supabase, redirectUrl } from '../lib/supabase';
+import { recovery, readableError, notify } from '../state';
+const mode = ref<'login' | 'signup' | 'reset'>('login');
+const email = ref('');
+const password = ref('');
+const pending = ref(false);
+const message = ref('');
+const failure = ref('');
 function switchMode(next: typeof mode.value) {
-  mode.value = next
-  failure.value = ''
-  message.value = ''
-  password.value = ''
+  mode.value = next;
+  failure.value = '';
+  message.value = '';
+  password.value = '';
 }
 async function submit() {
-  if (pending.value || !supabase) return
-  pending.value = true
-  failure.value = ''
-  message.value = ''
+  if (pending.value || !supabase) return;
+  pending.value = true;
+  failure.value = '';
+  message.value = '';
   try {
     if (recovery.value) {
-      const { error } = await supabase.auth.updateUser({ password: password.value })
-      if (error) throw error
-      recovery.value = false
-      notify('Пароль обновлён ♡')
+      const { error } = await supabase.auth.updateUser({ password: password.value });
+      if (error) throw error;
+      recovery.value = false;
+      notify('Пароль обновлён ♡');
     } else if (mode.value === 'signup') {
       const { data, error } = await supabase.auth.signUp({
         email: email.value,
         password: password.value,
         options: { emailRedirectTo: redirectUrl() },
-      })
-      if (error) throw error
+      });
+      if (error) throw error;
       if (!data.session)
         message.value =
-          'Проверьте почту: для завершения регистрации перейдите по ссылке в письме. Если аккаунт уже есть, войдите или восстановите пароль.'
+          'Проверьте почту: для завершения регистрации перейдите по ссылке в письме. Если аккаунт уже есть, войдите или восстановите пароль.';
     } else if (mode.value === 'reset') {
       const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
         redirectTo: redirectUrl(),
-      })
-      if (error) throw error
+      });
+      if (error) throw error;
       message.value =
-        'Если аккаунт с этой почтой существует, письмо со ссылкой для смены пароля скоро придёт.'
+        'Если аккаунт с этой почтой существует, письмо со ссылкой для смены пароля скоро придёт.';
     } else {
       const { error } = await supabase.auth.signInWithPassword({
         email: email.value,
         password: password.value,
-      })
-      if (error) throw error
+      });
+      if (error) throw error;
     }
   } catch (e) {
-    failure.value = readableError(e)
+    failure.value = readableError(e);
   } finally {
-    pending.value = false
+    pending.value = false;
   }
 }
 </script>

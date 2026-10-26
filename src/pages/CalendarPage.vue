@@ -1,39 +1,39 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import MascotIcon from '../components/MascotIcon.vue'
-import { events, loading, busy } from '../state'
-import { dayKey, fromDay, monthDays, prettyDate, timeOf } from '../lib/dates'
-import type { DiaryEvent, EventType } from '../types'
-defineProps<{ today: string }>()
+import { computed, ref } from 'vue';
+import MascotIcon from '../components/MascotIcon.vue';
+import { events, loading, busy } from '../state';
+import { dayKey, fromDay, monthDays, prettyDate, timeOf } from '../lib/dates';
+import type { DiaryEvent, EventType } from '../types';
+defineProps<{ today: string }>();
 const emit = defineEmits<{
-  add: [type: EventType]
-  edit: [event: DiaryEvent]
-  remove: [event: DiaryEvent]
-}>()
-const selected = ref(dayKey(new Date()))
-const month = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
-const days = computed(() => monthDays(month.value))
+  add: [type: EventType];
+  edit: [event: DiaryEvent];
+  remove: [event: DiaryEvent];
+}>();
+const selected = ref(dayKey(new Date()));
+const month = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+const days = computed(() => monthDays(month.value));
 const label = computed(() =>
   month.value.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }).replace(' г.', ''),
-)
+);
 const byDay = computed(() => {
-  const result = new Map<string, DiaryEvent[]>()
+  const result = new Map<string, DiaryEvent[]>();
   for (const e of events.value) {
-    const key = dayKey(e.occurred_at)
-    result.set(key, [...(result.get(key) || []), e])
+    const key = dayKey(e.occurred_at);
+    result.set(key, [...(result.get(key) || []), e]);
   }
-  return result
-})
-const selectedEvents = computed(() => byDay.value.get(selected.value) || [])
+  return result;
+});
+const selectedEvents = computed(() => byDay.value.get(selected.value) || []);
 const counts = (key: string, type: EventType) =>
-  (byDay.value.get(key) || []).filter((e) => e.type === type).length
+  (byDay.value.get(key) || []).filter((e) => e.type === type).length;
 function move(step: number) {
-  month.value = new Date(month.value.getFullYear(), month.value.getMonth() + step, 1)
+  month.value = new Date(month.value.getFullYear(), month.value.getMonth() + step, 1);
 }
 function goToday(today: string) {
-  selected.value = today
-  const d = fromDay(today)
-  month.value = new Date(d.getFullYear(), d.getMonth(), 1)
+  selected.value = today;
+  const d = fromDay(today);
+  month.value = new Date(d.getFullYear(), d.getMonth(), 1);
 }
 </script>
 <template>

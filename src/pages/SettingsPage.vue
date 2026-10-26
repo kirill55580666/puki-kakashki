@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 import {
   events,
   session,
@@ -10,15 +10,15 @@ import {
   error,
   readableError,
   refresh,
-} from '../state'
-import { supabase, redirectUrl } from '../lib/supabase'
-import { parseImport } from '../lib/import'
-import type { EventInput } from '../types'
-import ConfirmDialog from '../components/ConfirmDialog.vue'
-const pending = ref(false)
-const confirmation = ref<'clear' | 'import' | null>(null)
-const inputs = ref<EventInput[]>([])
-const importError = ref('')
+} from '../state';
+import { supabase, redirectUrl } from '../lib/supabase';
+import { parseImport } from '../lib/import';
+import type { EventInput } from '../types';
+import ConfirmDialog from '../components/ConfirmDialog.vue';
+const pending = ref(false);
+const confirmation = ref<'clear' | 'import' | null>(null);
+const inputs = ref<EventInput[]>([]);
+const importError = ref('');
 function exportData() {
   const blob = new Blob(
     [
@@ -33,30 +33,30 @@ function exportData() {
       ),
     ],
     { type: 'application/json' },
-  )
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'my-little-diary.json'
-  a.click()
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
-  notify('Файл с твоей историей готов ♡')
+  );
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'my-little-diary.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  notify('Файл с твоей историей готов ♡');
 }
 async function importFile(event: Event) {
-  const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (!file) return
-  importError.value = ''
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+  importError.value = '';
   try {
-    if (file.size > 2_000_000) throw new Error('Файл слишком большой. Максимум — 2 МБ.')
-    inputs.value = parseImport(await file.text())
-    error.value = ''
-    confirmation.value = 'import'
+    if (file.size > 2_000_000) throw new Error('Файл слишком большой. Максимум — 2 МБ.');
+    inputs.value = parseImport(await file.text());
+    error.value = '';
+    confirmation.value = 'import';
   } catch (e) {
     importError.value =
-      e instanceof SyntaxError ? 'Это не JSON-файл. Проверьте формат.' : (e as Error).message
+      e instanceof SyntaxError ? 'Это не JSON-файл. Проверьте формат.' : (e as Error).message;
   } finally {
-    input.value = ''
+    input.value = '';
   }
 }
 async function confirm() {
@@ -65,27 +65,27 @@ async function confirm() {
       confirmation.value === 'clear'
         ? 'Дневник очищен. Можно начать заново ♡'
         : 'Записи импортированы ♡',
-    )
-    confirmation.value = null
+    );
+    confirmation.value = null;
   }
 }
 async function authAction(action: 'logout' | 'reset') {
-  if (!supabase || pending.value) return
-  pending.value = true
-  error.value = ''
+  if (!supabase || pending.value) return;
+  pending.value = true;
+  error.value = '';
   try {
     const result =
       action === 'logout'
         ? await supabase.auth.signOut({ scope: 'local' })
         : await supabase.auth.resetPasswordForEmail(session.value!.user.email!, {
             redirectTo: redirectUrl(),
-          })
-    if (result.error) throw result.error
-    if (action === 'reset') notify('Письмо для смены пароля отправлено ♡')
+          });
+    if (result.error) throw result.error;
+    if (action === 'reset') notify('Письмо для смены пароля отправлено ♡');
   } catch (e) {
-    error.value = readableError(e)
+    error.value = readableError(e);
   } finally {
-    pending.value = false
+    pending.value = false;
   }
 }
 </script>
@@ -189,11 +189,13 @@ async function authAction(action: 'logout' | 'reset') {
         Удалить все свои записи из дневника. Отменить это действие нельзя — сначала можно скачать
         копию.
       </p>
-      <!-- prettier-ignore -->
       <button
         class="danger-button"
         :disabled="busy || !events.length"
-        @click="error = ''; confirmation = 'clear'"
+        @click="
+          error = '';
+          confirmation = 'clear';
+        "
       >
         Удалить все записи
       </button>

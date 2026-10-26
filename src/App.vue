@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
-import CalendarPage from './pages/CalendarPage.vue'
-import StatsPage from './pages/StatsPage.vue'
-import HistoryPage from './pages/HistoryPage.vue'
-import SettingsPage from './pages/SettingsPage.vue'
-import AuthPage from './pages/AuthPage.vue'
-import EventDialog from './components/EventDialog.vue'
-import ConfirmDialog from './components/ConfirmDialog.vue'
-import type { DiaryEvent, EventType } from './types'
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
+import CalendarPage from './pages/CalendarPage.vue';
+import StatsPage from './pages/StatsPage.vue';
+import HistoryPage from './pages/HistoryPage.vue';
+import SettingsPage from './pages/SettingsPage.vue';
+import AuthPage from './pages/AuthPage.vue';
+import EventDialog from './components/EventDialog.vue';
+import ConfirmDialog from './components/ConfirmDialog.vue';
+import type { DiaryEvent, EventType } from './types';
 import {
   initialize,
   initialized,
@@ -20,48 +20,48 @@ import {
   notify,
   loading,
   refresh,
-} from './state'
-import { configurationError } from './lib/supabase'
-import { dayKey } from './lib/dates'
-const page = ref('calendar')
+} from './state';
+import { configurationError } from './lib/supabase';
+import { dayKey } from './lib/dates';
+const page = ref('calendar');
 const tabs = [
   { id: 'calendar', icon: '▦', name: 'Календарь' },
   { id: 'stats', icon: '▥', name: 'Мой ритм' },
   { id: 'history', icon: '◷', name: 'История' },
   { id: 'settings', icon: '⚙', name: 'Настройки' },
-]
-const editor = ref<{ type: EventType; event?: DiaryEvent } | null>(null)
-const deleting = ref<DiaryEvent | null>(null)
-const today = ref(dayKey(new Date()))
-let timer: ReturnType<typeof setInterval>
+];
+const editor = ref<{ type: EventType; event?: DiaryEvent } | null>(null);
+const deleting = ref<DiaryEvent | null>(null);
+const today = ref(dayKey(new Date()));
+let timer: ReturnType<typeof setInterval>;
 onMounted(() => {
-  if (!configurationError) void initialize()
+  if (!configurationError) void initialize();
   timer = setInterval(() => {
-    today.value = dayKey(new Date())
-  }, 30000)
-})
-onBeforeUnmount(() => clearInterval(timer))
+    today.value = dayKey(new Date());
+  }, 30000);
+});
+onBeforeUnmount(() => clearInterval(timer));
 watch(signedIn, () => {
-  editor.value = null
-  deleting.value = null
-  page.value = 'calendar'
-})
+  editor.value = null;
+  deleting.value = null;
+  page.value = 'calendar';
+});
 function add(type: EventType) {
-  error.value = ''
-  editor.value = { type }
+  error.value = '';
+  editor.value = { type };
 }
 function edit(event: DiaryEvent) {
-  error.value = ''
-  editor.value = { type: event.type, event }
+  error.value = '';
+  editor.value = { type: event.type, event };
 }
 function remove(event: DiaryEvent) {
-  error.value = ''
-  deleting.value = event
+  error.value = '';
+  deleting.value = event;
 }
 async function confirmDelete() {
   if (await mutate('remove', undefined, deleting.value!.id)) {
-    deleting.value = null
-    notify('Запись удалена ♡')
+    deleting.value = null;
+    notify('Запись удалена ♡');
   }
 }
 </script>
