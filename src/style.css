@@ -106,7 +106,6 @@ form .bristol-option {
 }
 .bristol-stat {
   padding: 0;
-  align-self: start;
 }
 .bristol-stat > summary {
   position: relative;
@@ -231,5 +230,8 @@ form .bristol-option {
 }
 
 .stats-grid {
+  align-items: stretch;
+}
+.stats-grid:has(.bristol-stat[open]) {
   align-items: start;
 }
