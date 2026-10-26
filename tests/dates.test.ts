@@ -19,8 +19,24 @@ test('recent period crosses year boundary without UTC shifts', () => {
   assert.deepEqual(recentDays(3, new Date(2026, 0, 2)), ['2025-12-31', '2026-01-01', '2026-01-02'])
 })
 test('import validates structure and discards supplied ownership', () => {
-  assert.deepEqual(parseImport(JSON.stringify({ events: [{ type: 'poop', occurred_at: '2026-01-01T00:00:00+03:00', user_id: 'other', id: 'other' }] })), [{ type: 'poop', occurred_at: '2025-12-31T21:00:00.000Z' }])
-  for (const input of ['null', '{}', '[]', '[{"type":"wrong","occurred_at":"2026-01-01T00:00:00Z"}]', '[{"type":"fart","occurred_at":"2026-01-01"}]']) assert.throws(() => parseImport(input))
+  assert.deepEqual(
+    parseImport(
+      JSON.stringify({
+        events: [
+          { type: 'poop', occurred_at: '2026-01-01T00:00:00+03:00', user_id: 'other', id: 'other' },
+        ],
+      }),
+    ),
+    [{ type: 'poop', occurred_at: '2025-12-31T21:00:00.000Z' }],
+  )
+  for (const input of [
+    'null',
+    '{}',
+    '[]',
+    '[{"type":"wrong","occurred_at":"2026-01-01T00:00:00Z"}]',
+    '[{"type":"fart","occurred_at":"2026-01-01"}]',
+  ])
+    assert.throws(() => parseImport(input))
   assert.throws(() => parseImport('[{"type":"poop","occurred_at":"2026-02-30T12:00:00Z"}]'))
   assert.throws(() => parseImport('[{"type":"poop","occurred_at":"2026-01-01T24:00:00Z"}]'))
 })
