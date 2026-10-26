@@ -107,7 +107,11 @@ form .bristol-option {
 .bristol-stat {
   padding: 0;
 }
-.bristol-stat > summary {
+.bristol-summary {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
   position: relative;
   cursor: pointer;
   list-style: none;
@@ -115,12 +119,35 @@ form .bristol-option {
   border-radius: 24px;
   min-height: calc(var(--stat-card-height) - 2px);
 }
-.bristol-stat > summary::-webkit-details-marker {
-  display: none;
+.bristol-summary:not(:disabled):active {
+  transform: none;
 }
-.bristol-stat > summary:focus-visible {
+.bristol-summary:focus-visible {
   outline: 3px solid #b681ac;
   outline-offset: 3px;
+}
+.stat-label {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.breakdown-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 320ms ease,
+    opacity 240ms ease;
+}
+.bristol-stat.expanded .breakdown-collapse {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.breakdown-clip {
+  min-height: 0;
+  overflow: hidden;
 }
 .stat-emoji {
   position: absolute;
@@ -139,8 +166,9 @@ form .bristol-option {
 }
 .breakdown-chevron {
   display: inline-block;
+  transition: transform 320ms ease;
 }
-.bristol-stat[open] .breakdown-chevron {
+.bristol-stat.expanded .breakdown-chevron {
   transform: rotate(180deg);
 }
 .bristol-breakdown {
@@ -199,10 +227,10 @@ form .bristol-option {
   margin-top: 12px;
 }
 @media (max-width: 760px) {
-  .stats-grid:has(.bristol-stat[open]) {
+  .stats-grid {
     grid-template-columns: 1fr;
   }
-  .bristol-stat > summary {
+  .bristol-summary {
     padding: 24px 18px;
   }
   .bristol-stat .stat-emoji {
@@ -210,11 +238,14 @@ form .bristol-option {
     right: 17px;
     top: 26px;
   }
-  .bristol-stat[open] p {
+  .bristol-stat.expanded p {
     max-width: none;
   }
   .bristol-breakdown {
     padding: 0 18px 18px;
+  }
+  .stat-label {
+    font-size: 11px;
   }
 }
 @media (max-width: 390px) {
