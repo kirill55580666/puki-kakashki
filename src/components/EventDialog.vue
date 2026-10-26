@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import type { BristolType, DiaryEvent, EventType } from '../types';
+import type { BristolType, DiaryEvent, EventType, Symptoms } from '../types';
+import { parseSymptoms, symptomFields } from '../lib/symptoms';
 import StoolIcon from './StoolIcon.vue';
 import { bristolTypes } from '../lib/bristol';
 import { localInput } from '../lib/dates';
@@ -18,6 +19,15 @@ const value = ref(
 );
 const validation = ref('');
 const bristolType = ref<BristolType | null>(props.event?.bristol_type ?? null);
+const symptoms = ref<Symptoms>({
+  pain: null,
+  bloating: null,
+  straining: null,
+  incomplete: null,
+  blood: null,
+  laxative: null,
+  ...props.event?.symptoms,
+});
 const previousFocus = document.activeElement as HTMLElement | null;
 onMounted(() => dialog.value?.showModal());
 onBeforeUnmount(() => previousFocus?.focus());
@@ -34,6 +44,7 @@ async function save() {
         type: props.type,
         occurred_at: date.toISOString(),
         bristol_type: props.type === 'poop' ? bristolType.value : null,
+        symptoms: parseSymptoms(symptoms.value, props.type),
       },
       props.event?.id,
     )
@@ -136,6 +147,60 @@ async function save() {
           </label>
         </div>
       </fieldset>
+      <details
+        class="symptom-editor"
+        :open="Boolean(event?.symptoms)"
+      >
+        <summary>Самочувствие <span>необязательно</span></summary>
+        <p class="symptom-help">Отмечай только то, что помнишь. «Не указано» не означает «нет».</p>
+        <div class="symptom-fields">
+          <label
+            >Боль в животе
+            <select
+              v-model="symptoms.pain"
+              :disabled="busy"
+            >
+              <option :value="null">Не указано</option>
+              <option :value="0">Боли не было</option>
+              <option :value="1">Слабая</option>
+              <option :value="2">Умеренная</option>
+              <option :value="3">Сильная</option>
+            </select>
+          </label>
+          <template
+            v-for="field in symptomFields"
+            :key="field.key"
+          >
+            <label v-if="!field.poopOnly || type === 'poop'"
+              >{{ field.label }}
+              <select
+                v-model="symptoms[field.key]"
+                :disabled="busy"
+              >
+                <option :value="null">Не указано</option>
+                <option :value="true">Да</option>
+                <option :value="false">Нет</option>
+              </select>
+            </label>
+          </template>
+        </div>
+      </details>
+      <p
+        v-if="symptoms.pain === 3"
+        class="symptom-alert"
+        role="alert"
+      >
+        Если сильная боль есть сейчас или не проходит, обратитесь за медицинской помощью без
+        промедления. Сохранение записи не заменяет обращение к врачу.
+      </p>
+      <p
+        v-if="symptoms.blood === true"
+        class="symptom-alert"
+        role="alert"
+      >
+        Кровь в стуле стоит обсудить с врачом. При большом количестве крови, продолжающемся
+        кровотечении или сильной боли нужна срочная помощь.
+      </p>
       <label
         >Когда это случилось?<input
           v-model="value"
