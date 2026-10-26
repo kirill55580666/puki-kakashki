@@ -3,6 +3,8 @@ import { computed, ref } from 'vue';
 import { events, busy } from '../state';
 import { dayKey, prettyDate, timeOf } from '../lib/dates';
 import type { DiaryEvent } from '../types';
+import StoolIcon from '../components/StoolIcon.vue';
+import { bristolLabel } from '../lib/bristol';
 defineEmits<{ edit: [event: DiaryEvent]; remove: [event: DiaryEvent] }>();
 const filter = ref('all');
 const limit = ref(50);
@@ -52,11 +54,16 @@ const filtered = computed(() =>
           class="event-symbol"
           :class="event.type"
         >
-          {{ event.type === 'poop' ? '💩' : '💨' }}
+          <StoolIcon
+            v-if="event.type === 'poop'"
+            :type="event.bristol_type"
+          />
+          <span v-else>💨</span>
         </div>
         <div class="event-description">
-          <strong>{{ event.type === 'poop' ? 'Миссия выполнена' : 'Ветер перемен' }}</strong
-          ><span
+          <strong>{{ event.type === 'poop' ? 'Миссия выполнена' : 'Ветер перемен' }}</strong>
+          <span v-if="event.type === 'poop'">{{ bristolLabel(event.bristol_type) }}</span>
+          <span
             >{{ prettyDate(dayKey(event.occurred_at)) }}
             {{ new Date(event.occurred_at).getFullYear() }} · {{ timeOf(event.occurred_at) }}</span
           >

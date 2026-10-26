@@ -24,9 +24,13 @@ function exportData() {
     [
       JSON.stringify(
         {
-          version: 1,
+          version: 2,
           exported_at: new Date().toISOString(),
-          events: events.value.map(({ type, occurred_at }) => ({ type, occurred_at })),
+          events: events.value.map(({ type, occurred_at, bristol_type }) => ({
+            type,
+            occurred_at,
+            bristol_type: type === 'poop' ? (bristol_type ?? null) : null,
+          })),
         },
         null,
         2,

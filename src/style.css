@@ -5,3 +5,266 @@
 @media(max-width:760px){.topbar{height:78px;padding:0 22px}.topbar nav{position:fixed;bottom:0;left:0;right:0;z-index:10;justify-content:space-around;background:#fffcfaf5;backdrop-filter:blur(15px);border-top:1px solid #eaddE5;padding:8px 6px calc(8px + env(safe-area-inset-bottom))}.topbar nav button{display:flex;flex-direction:column;gap:2px;font-size:10px;border-radius:12px;min-width:70px;padding:6px 10px}.topbar nav button span{font-size:22px;line-height:1.2}.brand{font-size:19px}.brand small{font-size:7px}.brand-icon{font-size:30px}.profile-button{width:34px;height:34px;font-size:21px}.demo-banner{gap:5px;flex-direction:column;font-size:9px;padding:7px}.demo-banner span+span{border:0;padding:0}.main-content{padding:26px 18px 35px}.page-heading{margin-bottom:22px}.page-heading h1{font-size:27px;letter-spacing:-1px}.page-heading p{font-size:12px;max-width:240px}.eyebrow{font-size:8px;letter-spacing:1.7px}.date-pill{padding:7px 10px;font-size:10px}.hero{padding:25px;min-height:300px;display:block;border-radius:23px}.hero h2{font-size:25px}.hero p{font-size:12px;max-width:235px}.hero-art{position:absolute;right:-36px;top:20px;width:180px;opacity:.8;pointer-events:none}.hero-art .mascot{width:180px}.art-note,.art-spark{display:none}.hero-copy{position:relative}.hero-actions{margin-top:34px;gap:8px}.hero-actions button{padding:11px 13px;font-size:12px;flex:1;gap:6px;white-space:nowrap}.hero-actions button span:last-child{margin-left:0}.hero small{text-align:center;margin-top:13px}.diary-grid{grid-template-columns:1fr;gap:18px}.calendar-card{padding:22px}.day{height:60px;font-size:14px}.day-events{font-size:13px}.day-column{gap:16px}.selected-card{min-height:250px}.empty{padding:20px 8px}.kind-note{padding:20px}.section-head h2{font-size:19px}footer{margin:0 18px;padding:19px 0 105px;flex-direction:column;align-items:center;gap:8px;font-size:9px}.stats-grid{gap:12px}.stat-card{padding:24px 18px}.stat-card>span{font-size:25px;right:17px;top:26px}.stat-card strong{font-size:34px}.stat-card p{font-size:11px;max-width:115px}.period-stats{gap:15px}.period-stats strong{font-size:18px}.period-stats span{font-size:10px}.chart{gap:4px;padding:0}.chart-card{padding:20px 16px}.segmented button{padding:7px 9px}.achievements{grid-template-columns:1fr;gap:12px}.achievement{display:grid;grid-template-columns:50px 1fr;grid-template-rows:auto auto auto;text-align:left;gap:3px 14px;padding:18px}.achievement>span{grid-row:1/4;margin:auto}.achievement p{margin:0}.achievement small{width:max-content;padding:3px 9px;margin-top:4px}.settings-grid{grid-template-columns:1fr;gap:18px}.settings-actions{gap:10px}.auth-layout{grid-template-columns:1fr;gap:25px;padding:25px 20px 40px;min-height:0}.auth-art .mascot{width:120px;margin:0}.auth-art h1{font-size:25px}.auth-art h1 br{display:none}.auth-art>.eyebrow{display:none}.auth-art p{font-size:12px;margin-top:8px}.auth-card{padding:27px}.auth-card h2{font-size:22px}.auth-art .mascot{float:right;margin:0 12px 0 0}.auth-art{text-align:left;padding:0 8px}.auth-art h1{padding-top:16px}.toast{bottom:90px;font-size:12px;padding:14px 20px}.global-error{margin:15px 18px 0}.history-list .event-description strong{font-size:12px}.history-list .event-description span{font-size:10px}}
 @media(max-width:390px){.hero{padding:22px 17px}.hero-art{right:-55px;top:38px;opacity:.55}.hero h2{font-size:23px}.hero p{max-width:200px}.date-pill{display:none}.hero-actions button{font-size:11px;padding:11px 8px}.hero-actions button span:last-child{display:none}.calendar-card{padding:18px 14px}.day{height:54px}.modal{padding:26px 22px}.section-head h2{font-size:17px}.segmented button{font-size:10px;padding:7px}.brand{font-size:18px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Bristol stool scale */
+.stool-icon {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.stool-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.event-modal {
+  width: min(540px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+.event-modal .modal-emoji .stool-icon {
+  width: 58px;
+  height: 58px;
+  font-size: 48px;
+}
+.bristol-picker {
+  border: 0;
+  padding: 0;
+  margin: 22px 0;
+  min-width: 0;
+}
+.bristol-picker legend {
+  font-size: 14px;
+  font-weight: 900;
+  color: #765565;
+}
+.modal .bristol-hint {
+  font-size: 11px;
+  margin: 5px 0 12px;
+}
+.bristol-options {
+  display: grid;
+  gap: 7px;
+}
+form .bristol-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid #eadde2;
+  border-radius: 14px;
+  background: #fffdfb;
+  cursor: pointer;
+  font-weight: 500;
+}
+.bristol-option.chosen {
+  border-color: #bd7897;
+  background: #f9eaf1;
+  box-shadow: inset 0 0 0 1px #bd7897;
+}
+.bristol-option:focus-within {
+  outline: 3px solid #b681ac;
+  outline-offset: 2px;
+}
+.bristol-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+}
+.bristol-option .stool-icon {
+  width: 44px;
+  height: 44px;
+}
+.bristol-option-text {
+  flex: 1;
+  min-width: 0;
+}
+.bristol-option-text strong {
+  display: block;
+  font-size: 12px;
+  color: #765565;
+}
+.bristol-option-text > span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #927c87;
+}
+.choice-mark {
+  color: #b7668b;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.bristol-stat {
+  padding: 0;
+}
+.bristol-summary {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+  list-style: none;
+  padding: 25px 30px;
+  border-radius: 24px;
+  min-height: calc(var(--stat-card-height) - 2px);
+}
+.bristol-summary:not(:disabled):active {
+  transform: none;
+}
+.bristol-summary:focus-visible {
+  outline: 3px solid #b681ac;
+  outline-offset: 3px;
+}
+.stat-label {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.breakdown-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 320ms ease,
+    opacity 240ms ease;
+}
+.bristol-stat.expanded .breakdown-collapse {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.breakdown-clip {
+  min-height: 0;
+  overflow: hidden;
+}
+.stat-emoji {
+  position: absolute;
+  right: 29px;
+  top: 28px;
+  font-size: 38px;
+}
+.breakdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #9c627c;
+}
+.breakdown-chevron {
+  display: inline-block;
+  transition: transform 320ms ease;
+}
+.bristol-stat.expanded .breakdown-chevron {
+  transform: rotate(180deg);
+}
+.bristol-breakdown {
+  padding: 0 22px 20px;
+  border-top: 1px solid #e8d5cf;
+}
+.bristol-breakdown .breakdown-period {
+  margin: 14px 0 8px;
+  font-size: 11px;
+}
+.bristol-breakdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.bristol-breakdown li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eddbd4;
+}
+.breakdown-description {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 800;
+}
+.breakdown-track {
+  height: 4px;
+  background: #ebd9d1;
+  border-radius: 4px;
+  margin-top: 7px;
+  overflow: hidden;
+}
+.breakdown-track > div {
+  height: 100%;
+  border-radius: inherit;
+  background: #bd7897;
+}
+.breakdown-count {
+  font-size: 14px;
+  font-weight: 900;
+  text-align: right;
+  min-width: 28px;
+}
+.breakdown-count small {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  color: #947d88;
+}
+.bristol-breakdown .breakdown-note,
+.bristol-breakdown .breakdown-empty {
+  font-size: 10px;
+  margin-top: 12px;
+}
+@media (max-width: 760px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .bristol-summary {
+    padding: 24px 18px;
+  }
+  .bristol-stat .stat-emoji {
+    font-size: 25px;
+    right: 17px;
+    top: 26px;
+  }
+  .bristol-stat.expanded p {
+    max-width: none;
+  }
+  .bristol-breakdown {
+    padding: 0 18px 18px;
+  }
+  .stat-label {
+    font-size: 11px;
+  }
+}
+@media (max-width: 390px) {
+  .bristol-option-text strong {
+    font-size: 11px;
+  }
+  .bristol-option-text > span {
+    font-size: 10px;
+  }
+  form .bristol-option {
+    gap: 8px;
+    padding: 8px;
+  }
+}
+
+.stats-grid {
+  --stat-card-height: 11.5rem;
+  align-items: start;
+}
+.stats-grid > .stat-card {
+  min-height: var(--stat-card-height);
+}

@@ -1,4 +1,4 @@
-import type { EventInput } from '../types'
+import type { BristolType, EventInput } from '../types'
 export function parseImport(text: string): EventInput[] {
   const parsed: unknown = JSON.parse(text)
   const rows = Array.isArray(parsed) ? parsed : (parsed as { events?: unknown } | null)?.events
@@ -22,6 +22,20 @@ export function parseImport(text: string): EventInput[] {
       Number(r.occurred_at.slice(11, 13)) > 23
     )
       throw new Error('В файле есть несуществующая календарная дата.')
-    return { type: r.type, occurred_at: new Date(r.occurred_at).toISOString() }
+    if (
+      r.bristol_type != null &&
+      (r.type !== 'poop' ||
+        !Number.isInteger(r.bristol_type) ||
+        Number(r.bristol_type) < 1 ||
+        Number(r.bristol_type) > 7)
+    )
+      throw new Error('Тип стула должен быть целым числом от 1 до 7 и указан только для какашек.')
+    return {
+      type: r.type,
+      occurred_at: new Date(r.occurred_at).toISOString(),
+      ...(r.bristol_type !== undefined
+        ? { bristol_type: r.bristol_type as BristolType | null }
+        : {}),
+    }
   })
 }
