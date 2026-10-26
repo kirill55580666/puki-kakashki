@@ -6,7 +6,7 @@ import { dayKey, fromDay, monthDays, prettyDate, timeOf } from '../lib/dates';
 import type { DiaryEvent, EventType } from '../types';
 defineProps<{ today: string }>();
 const emit = defineEmits<{
-  add: [type: EventType];
+  add: [type: EventType, day: string];
   edit: [event: DiaryEvent];
   remove: [event: DiaryEvent];
 }>();
@@ -57,13 +57,13 @@ function goToday(today: string) {
         <button
           class="primary"
           :disabled="busy || loading"
-          @click="emit('add', 'poop')"
+          @click="emit('add', 'poop', selected)"
         >
           <span>💩</span> Я покакала! <span>＋</span></button
         ><button
           class="lavender-button"
           :disabled="busy || loading"
-          @click="emit('add', 'fart')"
+          @click="emit('add', 'fart', selected)"
         >
           <span>💨</span> Я пукнула! <span>＋</span>
         </button>
