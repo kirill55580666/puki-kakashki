@@ -13,6 +13,7 @@ export interface DiaryEvent {
   user_id: string
   type: EventType
   bristol_type?: BristolType | null
+  attempt_duration_minutes?: number | null
   symptoms?: Symptoms | null
   occurred_at: string
   created_at: string
@@ -20,6 +21,7 @@ export interface DiaryEvent {
 export interface EventInput {
   type: EventType
   bristol_type?: BristolType | null
+  attempt_duration_minutes?: number | null
   symptoms?: Symptoms | null
   occurred_at: string
 }
