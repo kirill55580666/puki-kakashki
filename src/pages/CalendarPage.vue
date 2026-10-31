@@ -205,6 +205,9 @@ function goToday(today: string) {
               <strong>{{ event.type === 'poop' ? 'Миссия выполнена' : 'Ветер перемен' }}</strong>
               <span v-if="event.type === 'poop'">{{ bristolLabel(event.bristol_type) }}</span>
               <span>{{ timeOf(event.occurred_at) }}</span>
+              <span v-if="event.attempt_duration_minutes != null"
+                >Попытка · {{ event.attempt_duration_minutes }} мин</span
+              >
             </div>
             <button
               class="icon-button"

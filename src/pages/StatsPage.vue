@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { events } from '../state';
 import { dayKey, fromDay } from '../lib/dates';
 import ActivityInsights from '../components/ActivityInsights.vue';
-import HealthInsights from '../components/HealthInsights.vue';
+import WexnerPanel from '../components/WexnerPanel.vue';
 import StoolIcon from '../components/StoolIcon.vue';
 import { bristolBreakdown } from '../lib/bristol';
 const props = defineProps<{ today: string }>();
@@ -120,7 +120,7 @@ const achievements = computed(() => [
     </section>
   </div>
   <ActivityInsights :today="today" />
-  <HealthInsights :today="today" />
+  <WexnerPanel :today="today" />
   <h2 class="achievements-heading">Маленькие достижения <span class="pink">♡</span></h2>
   <div class="achievements">
     <section

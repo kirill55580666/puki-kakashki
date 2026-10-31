@@ -6,6 +6,7 @@ import StoolIcon from './StoolIcon.vue';
 import { bristolTypes } from '../lib/bristol';
 import { localInput } from '../lib/dates';
 import { busy, error, mutate, notify } from '../state';
+import AttemptDuration from './AttemptDuration.vue';
 const props = defineProps<{ type: EventType; day?: string; event?: DiaryEvent }>();
 const emit = defineEmits<{ close: [] }>();
 const dialog = ref<HTMLDialogElement>();
@@ -19,6 +20,7 @@ const value = ref(
 );
 const validation = ref('');
 const bristolType = ref<BristolType | null>(props.event?.bristol_type ?? null);
+const attemptDuration = ref<number | null>(props.event?.attempt_duration_minutes ?? null);
 const symptoms = ref<Symptoms>({
   pain: null,
   bloating: null,
@@ -45,6 +47,7 @@ async function save() {
         occurred_at: date.toISOString(),
         bristol_type: props.type === 'poop' ? bristolType.value : null,
         symptoms: parseSymptoms(symptoms.value, props.type),
+        attempt_duration_minutes: attemptDuration.value,
       },
       props.event?.id,
     )
@@ -147,6 +150,10 @@ async function save() {
           </label>
         </div>
       </fieldset>
+      <AttemptDuration
+        v-model="attemptDuration"
+        :disabled="busy"
+      />
       <details
         class="symptom-editor"
         :open="Boolean(event?.symptoms)"

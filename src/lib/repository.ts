@@ -2,6 +2,7 @@ import type { DiaryEvent, EventInput, Repository } from '../types'
 import { supabase } from './supabase'
 import { createLocalRepository } from './localRepository'
 import { parseSymptoms } from './symptoms.ts'
+import { parseDuration } from './duration.ts'
 export function createRepository(userId: string): Repository {
   if (!supabase) return createLocalRepository(localStorage)
   const client = supabase
@@ -9,6 +10,7 @@ export function createRepository(userId: string): Repository {
     ...input,
     bristol_type: input.type === 'poop' ? (input.bristol_type ?? null) : null,
     symptoms: parseSymptoms(input.symptoms, input.type),
+    attempt_duration_minutes: parseDuration(input.attempt_duration_minutes),
   })
   return {
     async list() {
