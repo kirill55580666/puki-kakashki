@@ -17,6 +17,14 @@ const weekEnd = computed(() => {
   return date;
 });
 const completedDates = computed(() => recentDays(7, weekEnd.value));
+const completedPoopCount = computed(
+  () =>
+    events.value.filter(
+      (row) => row.type === 'poop' && completedDates.value.includes(dayKey(row.occurred_at)),
+    ).length,
+);
+const frequencyInsight = computed(() => insights.value.find((item) => item.id === 'frequency'));
+const otherInsights = computed(() => insights.value.filter((item) => item.id !== 'frequency'));
 const recent = computed(() =>
   events.value.filter(
     (row) =>
@@ -109,7 +117,48 @@ function downloadSummary() {
       aria-live="polite"
     >
       <article
-        v-for="item in insights"
+        v-if="completedPoopCount < 3"
+        class="health-insight"
+        :class="completeWeek ? 'watch' : 'info'"
+      >
+        <div class="insight-level">
+          {{ completeWeek ? '✦ Стоит обсудить' : 'ⓘ Нужно подтверждение' }}
+        </div>
+        <h3>{{ frequencyInsight?.title ?? 'Для оценки частоты стула нужны все записи' }}</h3>
+        <p class="insight-evidence">
+          {{ prettyDate(completedDates[0]!) }} — {{ prettyDate(completedDates[6]!) }}: записей о
+          дефекации — {{ completedPoopCount }}. Сегодня не учитывается.
+        </p>
+        <p v-if="!completeWeek">
+          За эти семь дней меньше трёх записей. Пока не показываем вывод о редком стуле: возможно,
+          часть записей пропущена. Подтвердите, что записаны все дефекации, чтобы увидеть результат.
+        </p>
+        <p v-else>{{ frequencyInsight?.advice }}</p>
+        <label class="completeness-check">
+          <input
+            v-model="completeWeek"
+            type="checkbox"
+          />
+          Я записала все дефекации за эти семь дней. В дни без записей стула не было.
+        </label>
+        <p class="fine-print">Подтверждение сбрасывается при изменении записей или даты.</p>
+        <details
+          v-if="frequencyInsight"
+          class="insight-explanation"
+        >
+          <summary>Почему появилась подсказка</summary>
+          <p>{{ frequencyInsight.rule }}</p>
+          <a
+            :href="frequencyInsight.source"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Медицинский источник · NIDDK ↗
+          </a>
+        </details>
+      </article>
+      <article
+        v-for="item in otherInsights"
         :key="item.id"
         class="health-insight"
         :class="item.level"
@@ -138,7 +187,7 @@ function downloadSummary() {
         </details>
       </article>
       <div
-        v-if="!insights.length"
+        v-if="!insights.length && completedPoopCount >= 3"
         class="health-empty"
       >
         <span>✧</span>
@@ -152,24 +201,6 @@ function downloadSummary() {
         </p>
       </div>
     </div>
-    <details class="completeness-panel">
-      <summary>Можно ли оценить редкий стул?</summary>
-      <p>
-        Для этого нужны все дефекации за семь завершённых дней:
-        {{ prettyDate(completedDates[0]!) }} — {{ prettyDate(completedDates[6]!) }}. Сегодня не
-        учитывается.
-      </p>
-      <label class="completeness-check"
-        ><input
-          v-model="completeWeek"
-          type="checkbox"
-        />Я записала все дефекации за эти даты, включая дни, когда их не было</label
-      >
-      <p class="fine-print">
-        Без подтверждения дни без записей не считаются днями без стула. Подтверждение сбрасывается
-        при изменении записей или даты.
-      </p>
-    </details>
     <button
       class="secondary"
       :disabled="!recent.length && !insights.length"
